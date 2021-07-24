@@ -1,6 +1,11 @@
 from src.interface.menuCreator import MenuCreator as mc
 import tkinter as tk
+import os
 
+class Main:
+
+    def __init__(self):
+        pass
 
 
 root = tk.Tk()

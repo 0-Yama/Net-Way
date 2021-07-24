@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter.ttk import *
 from typing import Collection
 from functools import partial
+from ..database.handler import Handler
 
 class MenuCreator(tk.Frame):
 
@@ -10,8 +11,8 @@ class MenuCreator(tk.Frame):
         super().__init__(master)
         self.master = master
         self.pack()
-        self.login()
-    def createButton     (self, info) -> tk.Button:
+        self.loginMenu()
+    def createButton     (self, **info) -> tk.Button:
         
         button = tk.Button(self.master,
                         text    = info['text'],
@@ -30,7 +31,7 @@ class MenuCreator(tk.Frame):
             pass
         button.place(bordermode=OUTSIDE, x=info['xpos'], y=info['ypos'], width=info['width'], height=info['height'])
         return button
-    def createLabel      (self, info) -> tk.Label:
+    def createLabel      (self, **info) -> tk.Label:
         text = tk.Label(
                         self.master,
                         relief = FLAT,
@@ -43,12 +44,12 @@ class MenuCreator(tk.Frame):
         )
         text.place(bordermode=OUTSIDE, x=info['xpos'], y=info['ypos'], width=info['width'], height=info['height'])
         return text
-    def createInput      (self, info) -> tk.Entry:
+    def createInput      (self, **info) -> tk.Entry:
         input = tk.Entry(
                         self.master,
+                        name=info['name'],
                         show=info['show'],
                         relief=FLAT,
-                        textvariable=info['textVar']
                         )
         input.place(bordermode=OUTSIDE, x=info['xpos'], y=info['ypos'], width=info['width'], height=info['height'])
         return input
@@ -60,98 +61,85 @@ class MenuCreator(tk.Frame):
             print(entry.config()['show'][4])
             entry.configure(show='*')  
 
-    def checklogin(self, login : str, password : str):
-        pass
+    def checklogin(self,username : Entry ,password : Entry):
+        print(username.get())
+        print(password.get())
 
-    def login          (self):       
-        
-        self.loginTextInput = ''
-        usernameInput = self.createInput({
-                                    'show'                 : '',
-                                    'xpos'                 : 450,
-                                    'ypos'                 : 200,
-                                    'width'                : 200,
-                                    'height'               : 40,
-                                    'textVar'              : self.loginTextInput
-                                    })
-        usernameLabel = self.createLabel({
-                                    'text'                 : 'Username : ',
-                                    'font'                 : 'Arial',
-                                    'fontSize'             : 12,
-                                    'fontStyle'            : 'bold',
-                                    'fontColor'            : '#000000',
-                                    'backgroundColor'      : '#FFFFFF',
-                                    'backgroundColorHover' : '#FFFFFF',
-                                    'xpos'                 : 300,
-                                    'ypos'                 : 200,
-                                    'width'                : 150,
-                                    'height'               : 40})
-        
-        
-        self.passwordTextInput = ''
-        passwordInput = self.createInput({
-                                    'show'                 : '*',
-                                    'xpos'                 : 450,
-                                    'ypos'                 : 300,
-                                    'width'                : 200,
-                                    'height'               : 40,
-                                    'textVar'              : self.passwordTextInput
-                                    })
-        passwordLabel = self.createLabel({
-                                    'text'                 : 'Password : ',
-                                    'font'                 : 'Arial',
-                                    'fontSize'             : 12,
-                                    'fontStyle'            : 'bold',
-                                    'fontColor'            : '#000000',
-                                    'backgroundColor'      : '#FFFFFF',
-                                    'backgroundColorHover' : '#FFFFFF',
-                                    'xpos'                 : 300,
-                                    'ypos'                 : 300,
-                                    'width'                : 150,
-                                    'height'               : 40})
-        passwordShow  = self.createButton({
-                                    'text'                 : 'show',
-                                    'font'                 : 'Arial',
-                                    'fontSize'             : 12,
-                                    'fontStyle'            : 'bold',
-                                    'fontColor'            : '#FFFFFF',
-                                    'backgroundColor'      : '#222222',
-                                    'backgroundColorHover' : '#111111',
-                                    'xpos'                 : 650,
-                                    'ypos'                 : 300,
-                                    'width'                : 50,
-                                    'height'               : 40,
-                                    'action'               : lambda input = passwordInput : (self.changeShowStatus(input))
-                                    })
+    def destroyMenu (self, menu : dict):
+        for widget in menu:
+            menu[widget].destroy()
 
-        quit          = self.createButton({
-                            'text'                 : 'Quit',
-                            'font'                 : 'Arial',
-                            'fontSize'             : 12,
-                            'fontStyle'            : 'bold',
-                            'fontColor'            : '#FFFFFF',
-                            'backgroundColor'      : '#AA0000',
-                            'backgroundColorHover' : '#440000',
-                            'xpos'                 : 80,
-                            'ypos'                 : 640,
-                            'width'                : 100,
-                            'height'               : 40,
-                            'action'               : lambda : self.master.destroy()
-                            })
-        login         = self.createButton({
-                                    'text'                 : 'Login',
-                                    'font'                 : 'Arial',
-                                    'fontSize'             : 12,
-                                    'fontStyle'            : 'bold',
-                                    'fontColor'            : '#FFFFFF',
-                                    'backgroundColor'      : '#00AA00',
-                                    'backgroundColorHover' : '#00DD00',
-                                    'xpos'                 : 750,
-                                    'ypos'                 : 500,
-                                    'width'                : 200,
-                                    'height'               : 40,
-                                    'action'               : lambda  login = self.loginTextInput, password = self.passwordTextInput : self.checklogin(login, password)
-                                    })
+    def loginMenu          (self):       
+        usernameInput = self.createInput(name                = 'login',
+                                        show                 = '',
+                                        xpos                 = 450,
+                                        ypos                 = 200,
+                                        width                = 200,
+                                        height               = 40)
+        usernameLabel = self.createLabel(text                = 'Username : ',
+                                        font                 = 'Arial',
+                                        fontSize             = 12,
+                                        fontStyle            = 'bold',
+                                        fontColor            = '#000000',
+                                        backgroundColor      = '#FFFFFF',
+                                        backgroundColorHover = '#FFFFFF',
+                                        xpos                 = 300,
+                                        ypos                 = 200,
+                                        width                = 150,
+                                        height               = 40)
+        passwordInput = self.createInput(name                = 'password',
+                                        show                 = '*',
+                                        xpos                 = 450,
+                                        ypos                 = 300,
+                                        width                = 200,
+                                        height               = 40)
+        passwordLabel = self.createLabel(text                = 'Password : ',
+                                        font                 = 'Arial',
+                                        fontSize             = 12,
+                                        fontStyle            = 'bold',
+                                        fontColor            = '#000000',
+                                        backgroundColor      = '#FFFFFF',
+                                        backgroundColorHover = '#FFFFFF',
+                                        xpos                 = 300,
+                                        ypos                 = 300,
+                                        width                = 150,
+                                        height               = 40)
+        passwordShow  = self.createButton(text               = 'show',
+                                        font                 = 'Arial',
+                                        fontSize             = 12,
+                                        fontStyle            = 'bold',
+                                        fontColor            = '#FFFFFF',
+                                        backgroundColor      = '#222222',
+                                        backgroundColorHover = '#111111',
+                                        xpos                 = 650,
+                                        ypos                 = 300,
+                                        width                = 50,
+                                        height               = 40,
+                                        action               = lambda input = passwordInput : (self.changeShowStatus(input)))
+        quit          = self.createButton(text               = 'Quit',
+                                        font                 = 'Arial',
+                                        fontSize             = 12,
+                                        fontStyle            = 'bold',
+                                        fontColor            = '#FFFFFF',
+                                        backgroundColor      = '#AA0000',
+                                        backgroundColorHover = '#440000',
+                                        xpos                 = 80,
+                                        ypos                 = 640,
+                                        width                = 100,
+                                        height               = 40,
+                                        action               = lambda : self.master.destroy())
+        login         = self.createButton(text               = 'Login',
+                                        font                 = 'Arial',
+                                        fontSize             = 12,
+                                        fontStyle            = 'bold',
+                                        fontColor            = '#FFFFFF',
+                                        backgroundColor      = '#00AA00',
+                                        backgroundColorHover = '#00DD00',
+                                        xpos                 = 750,
+                                        ypos                 = 500,
+                                        width                = 200,
+                                        height               = 40,
+                                        action               = lambda username = usernameInput, password = passwordInput : self.checklogin(username, password))
 
         self.loginMenu = {
             'quit'  : quit,
