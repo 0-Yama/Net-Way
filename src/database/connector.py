@@ -1,8 +1,7 @@
-from typing import NoReturn
-from ..lib.mysql.connector import (connection)
+from ..lib.mysql.connector import connection
 class Connector:
 
-    def __init__(self, user : str, password : str, host : str, dbName : str) -> NoReturn:
+    def __init__(self, user : str, password : str, host : str, dbName : str):
         self.user = user
         self.password = password
         self.host = host
@@ -16,12 +15,26 @@ class Connector:
                                             database=self.dbName)
 
     def commitQuery(self, query : str):
+        print(query)
         cursor = self.dbc.cursor()
         cursor.execute(query)
+        self.dbc.commit()
         cursor.close()
 
     def select(self, table : str, data : str, condition : str = '1 = 1'):
-        self.commitQuery(f'SELECT {data} FROM {table} WHERE {condition}')
+        cursor = self.dbc.cursor()
+        cursor.execute(f'SELECT {data} FROM {table} WHERE {condition}')
+        returnTab = []
+        for login, name, lastName, password, mail, right, city in cursor:
+            print(login, name, lastName, password, mail, right, city)
+            returnTab.append([login, name, lastName, password, mail, right, city])
+        cursor.close()
+        return returnTab
 
-    def insert(self, table : str, column : str, data : str = '1 = 1'):
-        self.commitQuery(f'INSERT INTO {table}({column}) VALUES ({data})')
+
+
+    def insert(self, table : str, column : str, data : str):
+        self.commitQuery(f'INSERT INTO {table} ({column}) VALUES ({data})')
+
+    def modify(self, table : str, update : str, condition : str = '1 = 1'):
+        self.commitQuery(f'UPDATE {table} SET {update} WHERE {condition}')
