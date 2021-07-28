@@ -24,12 +24,7 @@ class Connector:
     def select(self, table : str, data : str, condition : str = '1 = 1'):
         cursor = self.dbc.cursor()
         cursor.execute(f'SELECT {data} FROM {table} WHERE {condition}')
-        returnTab = []
-        for login, name, lastName, password, mail, right, city in cursor:
-            print(login, name, lastName, password, mail, right, city)
-            returnTab.append([login, name, lastName, password, mail, right, city])
-        cursor.close()
-        return returnTab
+        return cursor
 
 
 

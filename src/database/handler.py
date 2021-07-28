@@ -1,3 +1,4 @@
+from typing import Dict
 from ..database.connector import Connector
 class Handler:
 
@@ -24,4 +25,9 @@ class Handler:
         self.db.modify('user', update , 'login = \'' + info['login'] + '\'')
 
     def getUser(self,login):
-        return self.db.select('user','`login`, `name`, `lastName`, `password`, `mail`, `right`, `city`','`login` = \'' + login + '\'')
+        cursor =  self.db.select('user','`login`, `name`, `lastName`, `password`, `mail`, `right`, `city`','`login` = \'' + login + '\'')
+        returnTab = ['login', 'name', 'lastName', 'password', 'mail', 'right', 'city']
+        for login, name, lastName, password, mail, right, city in cursor:
+            print(login, name, lastName, password, mail, right, city)
+            returnTab = [login, name, lastName, password, mail, right, city]
+        return returnTab
