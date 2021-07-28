@@ -62,8 +62,7 @@ class MenuCreator(tk.Frame):
             entry.configure(show='*')  
 
     def checklogin(self,username : Entry ,password : Entry):
-        print(username.get())
-        print(password.get())
+        data = Handler().getUser(username.get())
 
     def destroyMenu (self, menu : dict):
         for widget in menu:

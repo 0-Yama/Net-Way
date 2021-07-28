@@ -1,11 +1,8 @@
 from src.interface.menuCreator import MenuCreator as mc
+from src.database.handler import Handler as testDB
 import tkinter as tk
-import os
 
-class Main:
 
-    def __init__(self):
-        pass
 
 
 root = tk.Tk()
@@ -15,3 +12,4 @@ root.config(background="#FFF")
 root.title("Net-Way")
 app = mc(master=root)
 app.mainloop()
+
