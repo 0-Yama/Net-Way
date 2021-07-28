@@ -1,5 +1,5 @@
+from re import split
 from src.interface.menuCreator import MenuCreator as mc
-from src.database.handler import Handler as testDB
 import tkinter as tk
 
 
@@ -12,4 +12,3 @@ root.config(background="#FFF")
 root.title("Net-Way")
 app = mc(master=root)
 app.mainloop()
-
